@@ -1,0 +1,58 @@
+#Installing jenkins as a container
+command: 
+  docker run -d \
+  --name jenkins \
+  --user root \
+  -p 8080:8080 -p 50000:50000 \
+  -v jenkins_home:/var/jenkins_home \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /usr/bin/docker:/usr/bin/docker \
+  jenkins/jenkins:
+  
+
+#Grafana and prometheus Setup 
+step 1: need to install prometheus on the kubernetes cluster using helm or any other tool, where in it installs promethues expoters, which helps in exporting the metrics of the server based on the yaml config files for the scrape details.
+
+step 2: here grafana can be installed as a container(if required) and add prometheus url as the datasource and test if the connetion is established with the url, 
+
+step 3: once the connection is setup and successful, you can make use of dashbord codes online which will help to visualize the details.
+
+###Loadbalencing 
+you can maake use of the Haproxy(as a top level loadbalancer) and nginx load balancer(cluster level load balancer).
+haproxy can be installed and setup using helm or deployment yaml file. 
+
+#haproxy.cfg:
+  frontend http_front
+    bind *:80
+    default_backend k8s_cluster
+
+  backend k8s_cluster
+    balance roundrobin
+    server worker1 192.168.1.10:80 check
+
+
+#ingress.yaml:
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: app-ingress
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+  spec:
+    ingressClassName: nginx
+    rules:
+      - host: app.test.com
+        http:
+          paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: my-app-service
+                  port:
+                    number: 80
+
+working:
+step1: User accesses app.test.com
+step2: HAProxy routes traffic to worker nodes in the Kubernetes cluster.
+step3: Nginx Ingress handles internal routing to Kubernetes services.
