@@ -33,15 +33,15 @@ pipeline {
                 sh 'docker push $DOCKER_REGISTRY/$DOCKER_IMAGE'
             }
         }
-        stage('Deploy pod') {
-            steps {
-                sshagent(['uCube-server']) { 
-                    sh """
-                    ssh -o StrictHostKeyChecking=no $K8S_MASTER \\
-                        "sudo kubectl rollout restart deploy ucube-app"
-                    """
-                }
-            }
-        }
+        // stage('Deploy pod') {
+        //     steps {
+        //         sshagent(['uCube-server']) { 
+        //             sh """
+        //             ssh -o StrictHostKeyChecking=no $K8S_MASTER \\
+        //                 "sudo kubectl rollout restart deploy ucube-app"
+        //             """
+        //         }
+        //     }
+        // }
     }
 }
