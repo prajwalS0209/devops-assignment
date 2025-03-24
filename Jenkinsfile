@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "foobar/ucube:latest"
+        DOCKER_IMAGE = "ucube:latest"
         DOCKER_REGISTRY = "prajwals0209"
     }
 
