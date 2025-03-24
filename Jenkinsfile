@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "ucube:latest"
         DOCKER_REGISTRY = "prajwals0209"
+        K8S_MASTER = 'uCube@35.200.206.13'
     }
 
     stages {
@@ -31,6 +32,16 @@ pipeline {
             steps {
                 sh 'docker push $DOCKER_REGISTRY/$DOCKER_IMAGE'
             }
+        }
+        stage('Deploy pod') {
+            steps {
+                sshagent(['uCube-server']) { 
+                    sh """
+                    ssh -o StrictHostKeyChecking=no $K8S_MASTER \\
+                        "sudo kubectl rollout restart deploy ucube-app"
+                    """
+                }
+
         }
     }
 }
