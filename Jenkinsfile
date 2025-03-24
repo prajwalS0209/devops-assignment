@@ -41,7 +41,7 @@ pipeline {
                         "sudo kubectl rollout restart deploy ucube-app"
                     """
                 }
-
+            }
         }
     }
 }
