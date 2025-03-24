@@ -15,7 +15,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                sh 'docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE .'
             }
         }
 
@@ -29,7 +29,7 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                sh 'docker push $DOCKER_IMAGE'
+                sh 'docker push $DOCKER_REGISTRY/$DOCKER_IMAGE'
             }
         }
     }
